@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html ng-app="libraryApp">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Library App</title>
+    <style>
+      /* CSS for table styling */
+      body {
+        background-color: #f3f3f3;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+        /* border-bottom: 1px solid #ddd; */
+      }
+
+      /* Styling for buttons */
+      .btn-group {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .btn-group button {
+        margin-right: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+      /* CSS for book table */
+      .book-table {
+        width: 100%;
+      }
+
+      .book-table td {
+        padding: 5px;
+      }
+
+      .field-label {
+        font-weight: bold;
+      }
+
+      .book-actions {
+        display: flex;
+        align-items: center;
+      }
+
+      .book-actions button {
+        margin-right: 5px;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .btn-update {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      .btn-delete {
+        background-color: #f44336;
+        color: white;
+      }
+
+      /* Alternating background colors for table rows */
+      /* .grey-row {
+        background-color: #f2f2f2;
+      } */
+      .editText {
+        border: none;
+        background-color: transparent;
+        outline: none;
+      }
+      .showData {
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow effect */
+      }
+
+      .book-table {
+        width: 100%;
+        border-collapse: collapse; /* Add border-collapse */
+      }
+
+      .book-table td {
+        padding: 8px;
+        border: 1px solid #ddd; /* Add border */
+      }
+      .container {
+        width: 900px; /* Set the width of the container */
+        margin: 0 auto; /* Center the container horizontally */
+      }
+
+      .showData {
+        width: 100%; /* Set the width of the table to 100% */
+      }
+
+      .book-table {
+        width: 100%; /* Set the width of the inner table to 100% */
+        border-collapse: collapse;
+      }
+
+      .book-table td {
+        padding: 8px;
+        border: 1px solid #ddd;
+      }
+
+      .form-container {
+        margin-bottom: 20px;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-container h2 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 18px;
+      }
+
+      .search-input,
+      .add-input {
+        width: calc(100% - 130px);
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-right: 10px;
+      }
+
+      .search-button,
+      .add-button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .add-button {
+        margin-top: 20px;
+        transform: translate(350%, 50%);
+        margin-bottom: 20px;
+      }
+
+      .search-button:hover,
+      .add-button:hover {
+        background-color: #0056b3;
+      }
+
+      /* Other CSS styles for your table */
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  </head>
+
+  <body ng-controller="libraryController">
+    <div class="container">
+      <h1>Library App</h1>
+
+      <div class="form-container">
+        <h2>Search for a Book</h2>
+        <form id="searchBookForm" ng-submit="searchForBook()">
+          <input
+            type="text"
+            id="searchTerm"
+            ng-model="searchTerm"
+            placeholder="Enter search term..."
+            class="search-input"
+          />
+          <button type="submit" class="search-button">Search</button>
+        </form>
+      </div>
+
+      <div class="form-container">
+        <h2>Add a New Book</h2>
+        <form id="addBookForm" ng-submit="addBook()">
+          <input
+            style="margin-bottom: 10px"
+            type="text"
+            id="title"
+            ng-model="title"
+            placeholder="Enter book title..."
+            class="add-input"
+          />
+          <input
+          style="margin-bottom: 10px"
+            type="text"
+            id="author"
+            ng-model="author"
+            placeholder="Enter author name..."
+            class="add-input"
+          />
+          <button type="submit" class="add-button">Add Book</button>
+        </form>
+      </div>
+
+      <div class="container">
+        <!-- Display all books in a table -->
+        <table>
+          <h2>All Available Books</h2>
+          <tbody class="showData">
+            <tr
+              ng-repeat="book in books"
+              ng-class="{'grey-row': $index % 2 != 0}"
+            >
+              <!-- First row -->
+              <td>
+                <table class="book-table">
+                  <tr>
+                    <td class="field-label">Title:</td>
+                    <td>
+                      <input
+                        class="editText"
+                        type="text"
+                        ng-model="book.title"
+                        placeholder="Enter updated title"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="field-label">Author:</td>
+                    <td>
+                      <input
+                        class="editText"
+                        type="text"
+                        ng-model="book.author"
+                        placeholder="Enter updated author"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                  </tr>
+                </table>
+              </td>
+              <!-- Second row -->
+              <td>
+                <div class="book-actions">
+                  <!-- Form for updating a book -->
+                  <form ng-submit="updateBook(book._id)">
+                    <button type="submit" class="btn-update">Update</button>
+                  </form>
+                  <!-- Button to delete a book -->
+                  <button ng-click="deleteBook(book._id)" class="btn-delete">
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div ng-if="books.length === 0">
+          <p>No books found.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dialog box -->
+    <div class="dialog-overlay" ng-class="{ 'show': showDialog }">
+      <div class="dialog-box">
+        <div class="dialog-content">
+          <h2>{{ dialogTitle }}</h2>
+          <div ng-repeat="book in dialogMessage" class="book-item">
+            <h3>{{ book.title }}</h3>
+            <p><strong>Author:</strong> {{ book.author }}</p>
+            <p><strong>Author:</strong> {{ book.link }}</p>
+          </div>
+          
+      </div>
+    </div>
+
+    <script>
+      var libraryApp = angular.module("libraryApp", []);
+
+      libraryApp.controller("libraryController", function ($scope, $http) {
+        $scope.showDialog = false;
+
+        // Function to fetch all books from the database
+        $scope.getAllBooks = function () {
+          $http
+            .get("/get-all-books")
+            .then(function (response) {
+              $scope.books = response.data;
+            })
+            .catch(function (error) {
+              console.error("Error fetching books: ", error);
+            });
+        };
+
+        // Call the function to fetch all books when the controller is initialized
+        $scope.getAllBooks();
+
+        $scope.searchForBook = function () {
+          $http
+            .get(`/search?q=${encodeURIComponent($scope.searchTerm)}`)
+            .then(function (response) {
+              const books = response.data;
+              if (books.length > 0) {
+                const bookTitles = books.map((book) => book.title).join("\n");
+                alert("Search Results:\n" + bookTitles);
+              } else {
+                alert("No books found.");
+              }
+              // Clear input fields after search
+              $scope.searchTerm = "";
+            })
+            .catch(function (error) {
+              console.error("Error searching for book: ", error);
+              alert("Error searching for book. Please try again later.");
+            });
+        };
+
+        $scope.addBook = function () {
+  $http
+    .post("/add-book", { title: $scope.title, author: $scope.author })
+    .then(function (response) {
+      $scope.dialogTitle = "Book Added";
+      alert("Book Added!");
+      $scope.dialogMessage = [{ title: $scope.title, author: $scope.author}];
+      $scope.showDialog = true;
+      // Clear input fields after adding book
+      $scope.title = "";
+      $scope.author = "";// Clear link field as well
+      // After adding a book, fetch all books again to update the list
+      $scope.getAllBooks();
+    })
+    .catch(function (error) {
+      console.error("Error adding book: ", error);
+      $scope.dialogTitle = "Error";
+      $scope.dialogMessage = "Internal server error";
+      $scope.showDialog = true;
+    });
+};
+
+
+        $scope.updateBook = function (id) {
+          const bookToUpdate = $scope.books.find((book) => book._id === id);
+          $http
+            .put(`/update-book/${id}`, {
+              title: bookToUpdate.title,
+              author: bookToUpdate.author,
+            })
+            .then(function (response) {
+              const updatedBookIndex = $scope.books.findIndex(
+                (book) => book._id === id
+              );
+              $scope.books[updatedBookIndex] = response.data;
+              $scope.closeDialog();
+              alert("Updated Succesfully");
+            })
+            .catch(function (error) {
+              console.error("Error updating book: ", error);
+              $scope.dialogTitle = "Error";
+              $scope.dialogMessage = "Internal server error";
+              $scope.showDialog = true;
+            });
+        };
+
+        $scope.deleteBook = function (id) {
+          $http
+            .delete(`/delete-book/${id}`)
+            .then(function () {
+              $scope.books = $scope.books.filter((book) => book._id !== id);
+              $scope.closeDialog();
+            })
+            .catch(function (error) {
+              console.error("Error deleting book: ", error);
+              $scope.dialogTitle = "Error";
+              $scope.dialogMessage = "Internal server error";
+              $scope.showDialog = true;
+            });
+        };
+
+        $scope.closeDialog = function () {
+          $scope.showDialog = false;
+        };
+      });
+    </script>
+  </body>
+</html>
